@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device=width, initial-scale=1.0">
-    <link rel = "stylesheet" href={{url_for('static', filename ='style.css') }}>
+    <link rel = "stylesheet" type="text/css" href="{{ url_for('static', filename ='style.css') }}">>
     <title>Ceneo pl web scraper</title>
 
 
@@ -13,6 +13,12 @@
         <h1>Ceneo pl web scraper</h1>
     </header>
     <section>
+        <div class="buttons">
+            <button onclick="location.href='{{ url_for('extract') }}'">extract</button>
+            <button onclick="location.href='{{ url_for('author') }}'">author</button>
+            <button onclick="location.href='{{ url_for('index') }}'">index</button>
+            <button onclick="location.href='{{ url_for('products') }}'">products</button>
+        </div>
         {% block content %}
            <p> This is base</p>
         {% endblock %}
@@ -22,6 +28,4 @@
     </footer>
 
 </body>
-
-
 </html>
