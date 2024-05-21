@@ -1,10 +1,12 @@
 from app import app
 from app import utils
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, send_file
 from bs4 import BeautifulSoup
 import requests
 import json
+from io import BytesIO
 import os
+import xlsxwriter
 import pandas as pd 
 import numpy as np
 import matplotlib 
@@ -53,10 +55,10 @@ def extract():
                     except TypeError:
                         url = None
                     if not os.path.exists("app/opinions"):
-                            os.mkdir("app/opinions")
-                            jf =open(f"app/opinions/{product_id}.json", "w", encoding="UTF-8")
-                            json.dump(product, jf, indent=4, ensure_ascii=False)
-                            jf.close()
+                        os.mkdir("app/opinions")
+                    jf =open(f"app/opinions/{product_id}.json", "w", encoding="UTF-8")
+                    json.dump(all_opinions, jf, indent=4, ensure_ascii=False)
+                    jf.close()
                 opinions = pd.DataFrame.from_dict(all_opinions)
                 MAX_SCORE = 5
                 opinions.score = opinions.score.apply(lambda s: round(s*MAX_SCORE,1))
@@ -78,10 +80,10 @@ def extract():
                     'recommendation_distribution' : recommendation_distribution.to_dict()
                 }
                 if not os.path.exists("app/products"):
-                            os.mkdir("app/products")
-                            jf =open(f"app/products/{product_id}.json", "w", encoding="UTF-8")
-                            json.dump(product, jf, indent=4, ensure_ascii=False)
-                            jf.close()
+                    os.mkdir("app/products")
+                jf =open(f"app/products/{product_id}.json", "w", encoding="UTF-8")
+                json.dump(product, jf, indent=4, ensure_ascii=False)
+                jf.close()
                 if not os.path.exists("app/charts"):
                     os.mkdir("app/charts")
                 fig, ax =plt.subplots()
@@ -127,3 +129,25 @@ def author():
 @app.route('/product/<product_id>')
 def product(product_id):
     return render_template("product.html", product_id=product_id)
+
+
+@app.route('/download/json/<product_id>')
+def download_json(product_id):
+    return send_file(f"opinions/{product_id}.json", mimetype='text/json', download_name= f'{product_id}.json', as_attachment=True)
+
+
+@app.route('/download/csv/<product_id>')
+def download_csv(product_id):
+    opinions = pd.read_json(f"app/opinions/{product_id}.json")
+    response_stream = BytesIO(opinions.to_csv().encode())
+    return send_file(response_stream, mimetype='text/csv', download_name= f'{product_id}.csv', as_attachment=True)
+
+@app.route('/download/xlsx/<product_id>')
+def download_xlsx(product_id):
+    opinions = pd.read_json(f"app/opinions/{product_id}.json")
+    buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+        opinions.to_excel(writer)
+    buffer.seek(0)
+    return send_file(buffer, mimetype='application/vnd.ms-excel', download_name= f'{product_id}.xlsx', as_attachment=True)
+

@@ -45,3 +45,26 @@ footer {
     bottom: 0;
     width: 100%;
 }
+table, th, td {
+    border: 1px solid;
+  }
+th, td {
+    padding: 15px;
+    text-align: center;
+}
+tr{
+    background-color: #969292;
+    color: #fff;
+    width: 100%; 
+}
+td{
+    background-color: #96929259;
+    color: #fff;
+    width: 100%; 
+}
+th{
+    background-color: #524747;
+    color: #fff;
+    width: 100%; 
+
+}
