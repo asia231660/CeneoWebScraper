@@ -2,4 +2,23 @@
 
 {% block content %}
 <p> This is product file</p>
+<div class="buttonsv2">
+    <td><button onclick="location.href='{{ url_for('download_json',product_id=product_id) }}'">JSON</button></td>
+    <td><button onclick="location.href='{{ url_for('download_csv',product_id=product_id) }}'">CSV</button></td>
+    <td><button onclick="location.href='{{ url_for('download_xlsx',product_id=product_id) }}'">XSLX</button></td>
+    <td></td>
+    <td></td>
+
+
+</div>
+<a type="button" class="btn-outline-dark" href="{{ url_for('charts', product_id=product_id) }}" aria-label="Close">Charts</a>
+{{opinions | safe}}
+
+{% endblock %}
+{% block scripts %}
+    <script>
+        let table= new DataTable('#opinions', {
+            responsive: true
+        });
+    </script>
 {% endblock %}
