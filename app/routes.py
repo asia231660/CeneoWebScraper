@@ -63,8 +63,8 @@ def extract():
                 MAX_SCORE = 5
                 opinions.score = opinions.score.apply(lambda s: round(s*MAX_SCORE,1))
                 opinions_count = len(opinions)
-                pros_count = opinions.pros.apply(lambda p: None if not p else p).count()
-                cons_count =opinions.cons.apply(lambda c: None if not c else c).count()
+                pros_count = opinions.pros_pl.apply(lambda p: None if not p else p).count()
+                cons_count =opinions.cons_pl.apply(lambda c: None if not c else c).count()
                 average_score = opinions.score.mean()
                 score_distribution = opinions.score.value_counts().reindex(np.arange(0,5.5,0.5))
                 recommendation_distribution = opinions.recommendation.value_counts(dropna=False).reindex([True, False, np.nan],fill_value = 0)
